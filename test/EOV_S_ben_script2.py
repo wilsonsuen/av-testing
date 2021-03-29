@@ -39,10 +39,10 @@ class TestPassingVehicles(unittest.TestCase):
     POVState.transform = sim.map_point_on_lane(lgsvl.Vector(egoX, egoY +4.00, egoZ -11.50))
     POV = sim.add_agent("Sedan", lgsvl.AgentType.NPC, POVState)
 
-    #car behind EGO
-    POVState = lgsvl.AgentState()
-    POVState.transform = sim.map_point_on_lane(lgsvl.Vector(egoX, egoY +4.00, egoZ +11.00))
-    POV = sim.add_agent("Sedan", lgsvl.AgentType.NPC, POVState)
+#     #car behind EGO
+#     POVState = lgsvl.AgentState()
+#     POVState.transform = sim.map_point_on_lane(lgsvl.Vector(egoX, egoY +4.00, egoZ +11.00))
+#     POV = sim.add_agent("Sedan", lgsvl.AgentType.NPC, POVState)
 
     #moving car
     POVState = lgsvl.AgentState()
@@ -87,3 +87,6 @@ class TestPassingVehicles(unittest.TestCase):
         print("FAILED: EGO vehicle distance was not maintained, {} > {}".format(separation, MAX_CAR_DISTANCE))
     else:
         print("PASSED")
+        
+    def destination_reached(self):
+        assertEqual(egoState.position, destination.position, "FAILED: Destination Not Reached")
