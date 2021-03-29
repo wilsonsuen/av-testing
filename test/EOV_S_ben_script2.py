@@ -1,91 +1,89 @@
-# This script is modified from the source below
-# Copyright (c) 2019-2020 LG Electronics, Inc.
-#
-# This software contains code licensed as described in LICENSE.
-
-
 import os
 import lgsvl
 import time
+import sys
+import logging
 import evaluator
+import unittest
 
-MAX_EGO_SPEED = 30.06  # (105 km/h, 65 mph)  
-SPEED_VARIANCE = 10  # Simple Physics does not return an accurate value
-MAX_POV_SPEED = 18  # (96 km/h, 60 mph)
-MAX_POV_ROTATION = 5  # deg/s
-TIME_LIMIT = 35  # seconds
-TIME_DELAY = 2
-MAX_FOLLOWING_DISTANCE = 100  # Apollo 3.5 is very cautious
+class TestPassingVehicles(unittest.TestCase):
 
-print("VF_S_65_Slow - ", end='')
+    MAX_SPEED = 30.06  
+    SPEED_VARIANCE = 10 
+    MAX_POV_SPEED = 18  
+    TIME_LIMIT = 35
+    TIME_DELAY = 2
+    MAX_CAR_DISTANCE = 100 
+    
+    print("Passing Vehicles - ", end='')
+    
+    sim = lgsvl.Simulator(os.environ.get("SIMULATOR_HOST", "127.0.0.1"), 8181)
+    if sim.current_scene == "CubeTown":
+        sim.reset()
+    else:
+        sim.load("CubeTown")
+    
+    # spawn EGO in the 2nd to right lane
+    egoState = lgsvl.AgentState()
+    egoState.transform = sim.get_spawn()[0]
+    ego = sim.add_agent("Lincoln2017MKZ (Apollo 5.0)", lgsvl.AgentType.EGO, egoState)
+    egoX = ego.state.position.x
+    egoY = ego.state.position.y
+    egoZ = ego.state.position.z
+    egoState.transform = sim.map_point_on_lane(lgsvl.Vector(egoX, egoY, egoZ -8.50))
+    
+    ego.connect_bridge(os.environ.get("BRIDGE_HOST", "127.0.0.1"), 9090)
+    
+    #car front of EGO
+    POVState = lgsvl.AgentState()
+    POVState.transform = sim.map_point_on_lane(lgsvl.Vector(egoX, egoY +4.00, egoZ -11.50))
+    POV = sim.add_agent("Sedan", lgsvl.AgentType.NPC, POVState)
 
-sim = lgsvl.Simulator(os.environ.get("SIMULATOR_HOST", "127.0.0.1"), 8181)
-if sim.current_scene == "CubeTown":
-    sim.reset()
-else:
-    sim.load("CubeTown")
+    #car behind EGO
+    POVState = lgsvl.AgentState()
+    POVState.transform = sim.map_point_on_lane(lgsvl.Vector(egoX, egoY +4.00, egoZ +11.00))
+    POV = sim.add_agent("Sedan", lgsvl.AgentType.NPC, POVState)
 
-# spawn EGO in the 2nd to right lane
-egoState = lgsvl.AgentState()
-egoState.transform = sim.get_spawn()[0]
-ego = sim.add_agent("Lincoln2017MKZ (Apollo 5.0)", lgsvl.AgentType.EGO, egoState)
-egoX = ego.state.position.x
-egoY = ego.state.position.y
-egoZ = ego.state.position.z
+    #moving car
+    POVState = lgsvl.AgentState()
+    POVState.transform = sim.map_point_on_lane(lgsvl.Vector(egoX +5.00, egoY +4.00, egoZ -8.00))
+    POV = sim.add_agent("Sedan", lgsvl.AgentType.NPC, POVState)
 
-ego.connect_bridge(os.environ.get("BRIDGE_HOST", "127.0.0.1"), 9090)
+    def on_collision(agent1, agent2, contact):
+        raise evaluator.TestException("Ego collided with {}".format(agent2))
 
-#car front of EGO
-POVState = lgsvl.AgentState()
-POVState.transform = sim.map_point_on_lane(lgsvl.Vector(egoX, egoY +4.00, egoZ -6.50))
-POV = sim.add_agent("Sedan", lgsvl.AgentType.NPC, POVState)
+    ego.on_collision(on_collision)
+    POV.on_collision(on_collision)
 
-#car behind EGO
-POVState = lgsvl.AgentState()
-POVState.transform = sim.map_point_on_lane(lgsvl.Vector(egoX, egoY +4.00, egoZ +5.00))
-POV = sim.add_agent("Sedan", lgsvl.AgentType.NPC, POVState)
+    try:
+        t0 = time.time()
+        #sim.run(TIME_DELAY)  # The EGO should start moving first
+        POV.follow_closest_lane(True, MAX_POV_SPEED, False)
 
-#moving car
-POVState = lgsvl.AgentState()
-POVState.transform = sim.map_point_on_lane(lgsvl.Vector(egoX +5.00, egoY +4.00, egoZ -8.00))
-POV = sim.add_agent("Sedan", lgsvl.AgentType.NPC, POVState)
+        while True:
+            sim.run(0.5)
 
-def on_collision(agent1, agent2, contact):
-    raise evaluator.TestException("Ego collided with {}".format(agent2))
+            egoCurrentState = ego.state
+            if egoCurrentState.speed > MAX_SPEED + SPEED_VARIANCE:
+                raise evaluator.TestException("Ego speed exceeded limit, {} > {} m/s".format(egoCurrentState.speed, MAX_SPEED + SPEED_VARIANCE))
 
+            POVCurrentState = POV.state
+            if POVCurrentState.speed > MAX_POV_SPEED + SPEED_VARIANCE:
+                raise evaluator.TestException("POV speed exceeded limit, {} > {} m/s".format(POVCurrentState.speed, MAX_POV_SPEED + SPEED_VARIANCE))
+            if POVCurrentState.angular_velocity.y > 5:
+                raise evaluator.TestException("POV angular rotation exceeded limit, {} > {} deg/s".format(POVCurrentState.angular_velocity, 5))
 
-ego.on_collision(on_collision)
-POV.on_collision(on_collision)
+            if evaluator.separation(POVCurrentState.position, lgsvl.Vector(1.8, 0, 125)) < 5:
+                break
 
-try:
-    t0 = time.time()
-    sim.run(TIME_DELAY)  # The EGO should start moving first
-    POV.follow_closest_lane(True, MAX_POV_SPEED, False)
+            if time.time() - t0 > TIME_LIMIT:
+                break
+    except evaluator.TestException as e:
+        print("FAILED: " + repr(e))
+        exit()
 
-    while True:
-        sim.run(0.5)
-
-        egoCurrentState = ego.state
-        if egoCurrentState.speed > MAX_EGO_SPEED + SPEED_VARIANCE:
-            raise evaluator.TestException("Ego speed exceeded limit, {} > {} m/s".format(egoCurrentState.speed, MAX_EGO_SPEED + SPEED_VARIANCE))
-
-        POVCurrentState = POV.state
-        if POVCurrentState.speed > MAX_POV_SPEED + SPEED_VARIANCE:
-            raise evaluator.TestException("POV speed exceeded limit, {} > {} m/s".format(POVCurrentState.speed, MAX_POV_SPEED + SPEED_VARIANCE))
-        if POVCurrentState.angular_velocity.y > MAX_POV_ROTATION:
-            raise evaluator.TestException("POV angular rotation exceeded limit, {} > {} deg/s".format(POVCurrentState.angular_velocity, MAX_POV_ROTATION))
-
-        if evaluator.separation(POVCurrentState.position, lgsvl.Vector(1.8, 0, 125)) < 5:
-            break
-
-        if time.time() - t0 > TIME_LIMIT:
-            break
-except evaluator.TestException as e:
-    print("FAILED: " + repr(e))
-    exit()
-
-separation = evaluator.separation(egoCurrentState.position, POVCurrentState.position)
-if separation > MAX_FOLLOWING_DISTANCE:
-    print("FAILED: EGO failed to maintain distance, {} > {}".format(separation, MAX_FOLLOWING_DISTANCE))
-else:
-    print("PASSED")
+    separation = evaluator.separation(egoCurrentState.position, POVCurrentState.position)
+    if separation > MAX_CAR_DISTANCE:
+        print("FAILED: EGO vehicle distance was not maintained, {} > {}".format(separation, MAX_CAR_DISTANCE))
+    else:
+        print("PASSED")
