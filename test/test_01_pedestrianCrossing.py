@@ -105,5 +105,3 @@ try:
         egoPreviousState = egoCurrentState
         if time.time() - t0 > sim_config['TIME_LIMIT']:
                 break
-except lgsvl.evaluator.TestException as e:
-    exit("FAILED: {}".format(e))
