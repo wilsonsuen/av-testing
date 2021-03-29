@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+"""Description: Location tool to get position and rotation Vector of simulation car.
+   Auther: Wai Yin (Wilson) Suen
+   Date: 2021-03-28
+"""
 
 import os
 import lgsvl
