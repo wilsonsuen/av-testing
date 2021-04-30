@@ -1,6 +1,8 @@
 import os
 import lgsvl
+from environs import Env
 
+env = Env()
 SIMULATOR_HOST = os.environ.get("SIMULATOR_HOST", "127.0.0.1")
 SIMULATOR_PORT = int(os.environ.get("SIMULATOR_PORT", 8181))
 BRIDGE_HOST = os.environ.get("BRIDGE_HOST", "127.0.0.1")
