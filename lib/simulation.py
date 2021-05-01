@@ -31,16 +31,19 @@ class Simulation(object):
         self.peds = list()
         # self.sim = lgsvl.Simulator(self.simulator_host, self.simulator_port)
 
+    @keyword
     def set_simulator_and_map(self, map_name):
         self.sim = lgsvl.Simulator(self.simulator_host, self.simulator_port)
         self.map_name = self.env.str("LGSVL__MAP", map_name)
         self.sim.load(self.map_name)
 
+    @keyword
     def reset_map(self):
         if self.sim.current_scene == self.map_name:
             self.sim.reset()
         else:
             self.sim.load(self.map_name)
+
 
     def state_point_handler(self, obj, position_data, offset_from=None):
         """
@@ -66,6 +69,7 @@ class Simulation(object):
         if 'opposite' in position_data and position_data['opposite']:
             obj.transform.rotation = lgsvl.Vector(obj.transform.rotation.x, obj.transform.rotation.y-180, obj.transform.rotation.z)
 
+    @keyword('Setup Scenario')
     def setup_map_env(self, sim_map, ego, npcs=[], pedestrians=[]): # could be more like trafficlight
         """ This function set up map enviroment initial stage, user can define:
         Map(sim_map) - Map id for the map in test
@@ -126,9 +130,14 @@ class Simulation(object):
             self.npcs[-1].follow(waypoints, loop=False)
             self.npcs[-1].on_collision(on_collision)
 
+    @keyword
     def start_simulation(self):
         # while True:
         self.sim.run(10)
+
+    @keyword
+    def close_simulation(self):
+        self.sim.close()
 
     @keyword("EGO Car driving at ${speed} and School Bus ${status} on ${lane}")
     def school_bus_case(self, speed, status, lane):
@@ -140,7 +149,6 @@ class Simulation(object):
                          SCHOOL_BUS_POSITION[lane]['waypoints'][:1]
         }]
         self.setup_map_env("Straight2LaneOpposingPedestrianCrosswalk",
-        # self.setup_map_env("Borregas_Ave",
                            EGO_DATA,
                            npcs=npc)
         self.start_simulation()
