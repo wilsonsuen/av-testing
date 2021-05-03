@@ -57,9 +57,9 @@ class Simulation(object):
             if onlane:
                 obj.transform = self.sim.map_point_on_lane(lgsvl.Vector(*position_data['position']))
             else:
-                obj.transform.position = lgsvl.Vector(*position_data['position'])
+                obj.transform.position = lgsvl.Vector(position_data['position'].values())
                 if 'rotation' in position_data:
-                    obj.transform.rotation = lgsvl.Vector(*position_data['rotation'])
+                    obj.transform.rotation = lgsvl.Vector(*position_data['rotation'].values())
         if 'forward' in position_data or 'right' in position_data:
             forward = lgsvl.utils.transform_to_forward(offset_from.transform)
             right = lgsvl.utils.transform_to_right(offset_from.transform)
