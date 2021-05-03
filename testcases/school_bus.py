@@ -19,7 +19,7 @@ if __name__ == "__main__":
         with open(testcase_path) as f:
             testdata = json.load(f)
         school_bus_test = main_suite.tests.create(testdata['testcase']['name'])
-        school_bus_test.setup.config(name='Setup Scenario2', args=[testcase_path])
+        school_bus_test.setup.config(name='Setup Scenario', args=[testcase_path])
         school_bus_test.body.create_keyword('Start Simulation')
         school_bus_test.teardown.config(name='Close Simulation')
 
