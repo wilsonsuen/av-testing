@@ -162,10 +162,11 @@ class Simulation(object):
         info(f"Setup EGO vehicle: {ego['variant']}", also_console=self.console)
         info(f"Setup EGO Starting Point: {ego['transform']}", also_console=self.console)
         self.egoState = lgsvl.AgentState()
-        self.state_point_handler(self.egoState, ego['transform'], self.egoState, True)
+        self.state_point_handler(self.egoState, ego['transform'], self.egoState)
         self.ego_model = self.env.str("LGSVL__VEHICLE_0", ego['sensorsConfigurationId'])
         self.ego = self.sim.add_agent(self.ego_model, lgsvl.AgentType.EGO, self.egoState)
         self.ego.connect_bridge(self.apollo_host, self.apollo_port)
+        info(self.ego.state.position, also_console=self.console)
         self.ego.on_collision(on_collision)
 
         # Connect Simulator, EGO and Dreamview
