@@ -1,0 +1,126 @@
+{
+    "version": "0.01",
+    "testcase": {
+        "name": "Ego Exit Parking Lot",
+        "id": "AV-3.01"
+    },
+    "vseMetadata": {
+        "cameraSettings": {
+            "position": {
+                "x": -74.5729293823242,
+                "y": 60,
+                "z": -57.5616722106934
+            },
+            "rotation": {
+                "x": 90,
+                "y": 230.40007019043,
+                "z": 0
+            }
+        }
+    },
+    "map": {
+        "id": "2aae5d39-a11c-4516-87c4-cdc9ca784551",
+        "name": "AutonomouStuff",
+        "parameterType": "map"
+    },
+    "agents": [
+        {
+            "id": "3f4211dc-e5d7-42dc-94c5-c4832b1331bb",
+            "uid": "0463e464-73d4-4f59-9a6d-2ea0e2d36276",
+            "variant": "Lincoln2017MKZ_LGSVL",
+            "modules": ["Localization","Transform","Routing","Prediction","Planning","Control"],
+            "type": 1,
+            "parameterType": "vehicle",
+            "transform": {
+                "position": {
+                    "x": -64.7368011474609,
+                    "y": -2.24284410476685,
+                    "z": -79.211555480957
+                },
+                "rotation": {
+                    "x": 0.335185766220093,
+                    "y": 318.684509277344,
+                    "z": -1.33404425284311E-08
+                }
+            },
+            "sensorsConfigurationId": "09510748-1f41-484e-9495-7d17129a62e3",
+            "destinationPoint": {
+                "position": {
+                    "x": -110.317489624023,
+                    "y": -2.90458583831787,
+                    "z": -53.1665802001953
+                },
+                "rotation": {
+                    "x": 1.90105557441711,
+                    "y": 241.407699584961,
+                    "z": -5.33902486665738E-08
+                }
+            }
+        },
+        {
+            "uid": "6ac98c9a-02ca-46a3-99e4-03695c82fafc",
+            "variant": "Hatchback",
+            "type": 2,
+            "parameterType": "",
+            "transform": {
+                "position": {
+                    "x": -79.210693359375,
+                    "y": -2.58789110183716,
+                    "z": -74.2656936645508
+                },
+                "rotation": {
+                    "x": 0.0203604605048895,
+                    "y": 233.432739257813,
+                    "z": 359.688171386719
+                }
+            },
+            "behaviour": {
+                "name": "NPCWaypointBehaviour",
+                "parameters": {
+                    "isLaneChange": false,
+                    "maxSpeed": 0
+                }
+            },
+            "color": {
+                "r": 0.00240299617871642,
+                "g": 0.18620178103447,
+                "b": 0.50943398475647
+            },
+            "waypoints": []
+        },
+        {
+            "uid": "bfae2781-ffe4-4c9b-acdd-1a36ed640aff",
+            "variant": "Jeep",
+            "type": 2,
+            "parameterType": "",
+            "transform": {
+                "position": {
+                    "x": -53.0944061279297,
+                    "y": -2.16927146911621,
+                    "z": -85.7252578735352
+                },
+                "rotation": {
+                    "x": 0.00834581721574068,
+                    "y": 50.1315383911133,
+                    "z": 0.281512171030045
+                }
+            },
+            "behaviour": {
+                "name": "NPCWaypointBehaviour",
+                "parameters": {
+                    "isLaneChange": false,
+                    "maxSpeed": 0
+                }
+            },
+            "color": {
+                "r": 1,
+                "g": 0.442666590213776,
+                "b": 0.251999914646149
+            },
+            "waypoints": []
+        }
+    ],
+    "controllables": [],
+    "time": 8,
+    "weather": {"rain":0.0, "fog":0, "wetness":0, "cloudiness":0, "damage":0}
+}

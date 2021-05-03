@@ -54,9 +54,9 @@ class Simulation(object):
         if 'spawns' in position_data:
             obj.transform = self.sim.get_spawn()[0]
         elif 'position' in position_data:
-            obj.transform.position = lgsvl.Vector(position_data['position'])
+            obj.transform.position = lgsvl.Vector(*position_data['position'])
             if 'rotation' in position_data:
-                obj.transform.rotation = lgsvl.Vector(position_data['rotation'])
+                obj.transform.rotation = lgsvl.Vector(*position_data['rotation'])
         if 'forward' in position_data or 'right' in position_data:
             forward = lgsvl.utils.transform_to_forward(offset_from.transform)
             right = lgsvl.utils.transform_to_right(offset_from.transform)
@@ -198,7 +198,8 @@ class Simulation(object):
                 else:
                     angle = npcState.transform.rotation
                 waypoints.append(lgsvl.DriveWaypoint(tempState.position, waypoint['speed'], angle, idle=waypoint['waitTime']))
-            self.npcs[-1].follow(waypoints, loop=False)
+                if waypoints:
+                    self.npcs[-1].follow(waypoints, loop=False)
             self.npcs[-1].on_collision(on_collision)
 
         info(f"Setup Pedestrians", also_console=self.console)
@@ -216,7 +217,8 @@ class Simulation(object):
                 else:
                     angle = lgsvl.Vector(0, 0, 0)
                 waypoints.append(lgsvl.DriveWaypoint(tempState.position, waypoint['speed'], angle, idle=waypoint['waitTime']))
-            self.npcs[-1].follow(waypoints, loop=False)
+                if waypoints:
+                    self.npcs[-1].follow(waypoints, loop=False)
             self.npcs[-1].on_collision(on_collision)
 
 
