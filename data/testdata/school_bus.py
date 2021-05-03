@@ -24,9 +24,10 @@ TESTDATA = [
 
 EGO_DATA = {
     'model': 'Lincoln2017MKZ_LGSVL',
+    'modules': ['Localization','Transform','Routing','Prediction','Planning','Control'],
     'Starting Point': {
         'spawns': 0,
-        'forward': 10
+        'forward': 10,
         # "position": {
         #     "x": 2.57176804542542,
         #     "y": 3.93298626173412E-16,
@@ -48,8 +49,8 @@ EGO_DATA = {
     }
 }
 
-
-SCHOOL_BUS_POSITION = {
+# School Bus spawn data for Straight2LaneOpposingPedestrianCrosswalk
+SCHOOL_BUS_DATA = {
     'Forward lane': {
         'Starting Point': {
             'forward': 20

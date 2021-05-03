@@ -29,6 +29,7 @@ class Simulation(object):
         self.sim = None
         self.npcs = list()
         self.peds = list()
+        self.console = True
         # self.sim = lgsvl.Simulator(self.simulator_host, self.simulator_port)
 
     @keyword
@@ -78,9 +79,12 @@ class Simulation(object):
         Pedestrian(pedestrians) - [{name, starting point, waypoints, speed, etc}...]
         """
         # Setup Simulator and Map
+        info(f"Setup Map: {sim_map}", also_console=self.console)
         self.set_simulator_and_map(getattr(SVLAsset, 'map_' + sim_map.replace('_', '').lower()))
         self.reset_map()
         # Setup EGO vehicle initial state
+        info(f"Setup EGO vehicle: {ego['model']}", also_console=self.console)
+        info(f"Setup EGO Starting Point: {ego['Starting Point']}", also_console=self.console)
         self.egoState = lgsvl.AgentState()
         self.state_point_handler(self.egoState, ego['Starting Point'], self.egoState)
         self.ego_model = self.env.str("LGSVL__VEHICLE_0", getattr(SVLAsset, 'ego_' + ego['model'].lower()))
@@ -89,35 +93,23 @@ class Simulation(object):
         self.ego.on_collision(on_collision)
 
         # Connect Simulator, EGO and Dreamview
+        info(f"Connecting Dreamview: {self.apollo_host}:{self.apollo_port}", also_console=self.console)
         self.dv = lgsvl.dreamview.Connection(self.sim, self.ego, self.apollo_host)
         self.dv.set_hd_map(self.env.str("LGSVL__AUTOPILOT_HD_MAP", sim_map))
         self.dv.set_vehicle(self.env.str("LGSVL__AUTOPILOT_0_VEHICLE_CONFIG", ego['model']))
+        info(f"Setup EGO modules: {ego['modules']}", also_console=self.console)
         try:
             modules = self.env.list("LGSVL__AUTOPILOT_0_VEHICLE_MODULES", subcast=str)
             if len(modules) == 0:
-                # logging.warning("LGSVL__AUTOPILOT_0_VEHICLE_MODULES is empty, using default list: {0}".format(modules))
-                modules = [
-                    'Localization',
-                    'Transform',
-                    'Routing',
-                    'Prediction',
-                    'Planning',
-                    'Control'
-                ]
+                modules = ego['modules']
         except Exception:
-            modules = [
-                'Localization',
-                'Transform',
-                'Routing',
-                'Prediction',
-                'Planning',
-                'Control'
-            ]
-            # logging.warning("LGSVL__AUTOPILOT_0_VEHICLE_MODULES is not set, using default list: {0}".format(modules))
+            modules = ego['modules']
         egoDesState = lgsvl.AgentState()
+        info(f"Setup EGO Destination Point: {ego['Destination Point']}", also_console=self.console)
         self.state_point_handler(egoDesState, ego['Destination Point'], self.egoState)
         destination = egoDesState.transform.position
         self.dv.setup_apollo(destination.x, destination.z, modules)
+        info(f"Setup NPCs", also_console=self.console)
         for npc in npcs:
             npcState = lgsvl.AgentState()
             self.state_point_handler(npcState, npc['Starting Point'], self.egoState)
@@ -144,9 +136,9 @@ class Simulation(object):
         console(f'Testing - EGO Car driving at {speed} and School Bus {status} on {lane}')
         npc = [{
             'npc': 'SchoolBus',
-            'Starting Point': SCHOOL_BUS_POSITION[lane]['Starting Point'],
-            'waypoints': SCHOOL_BUS_POSITION[lane]['waypoints'] if status.lower() == 'moving' else\
-                         SCHOOL_BUS_POSITION[lane]['waypoints'][:1]
+            'Starting Point': SCHOOL_BUS_DATA[lane]['Starting Point'],
+            'waypoints': SCHOOL_BUS_DATA[lane]['waypoints'] if status.lower() == 'moving' else\
+                         SCHOOL_BUS_DATA[lane]['waypoints'][:1]
         }]
         self.setup_map_env("Straight2LaneOpposingPedestrianCrosswalk",
                            EGO_DATA,
