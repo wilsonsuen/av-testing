@@ -47,16 +47,19 @@ class Simulation(object):
             self.sim.load(self.map_name)
 
 
-    def state_point_handler(self, obj, position_data, offset_from=None):
+    def state_point_handler(self, obj, position_data, offset_from=None, onlane=False):
         """
         forward and right in position data means it is offset from ego initial position
         """
         if 'spawns' in position_data:
             obj.transform = self.sim.get_spawn()[0]
         elif 'position' in position_data:
-            obj.transform.position = lgsvl.Vector(*position_data['position'])
-            if 'rotation' in position_data:
-                obj.transform.rotation = lgsvl.Vector(*position_data['rotation'])
+            if onlane:
+                obj.transform = self.sim.map_point_on_lane(lgsvl.Vector(*position_data['position']))
+            else:
+                obj.transform.position = lgsvl.Vector(*position_data['position'])
+                if 'rotation' in position_data:
+                    obj.transform.rotation = lgsvl.Vector(*position_data['rotation'])
         if 'forward' in position_data or 'right' in position_data:
             forward = lgsvl.utils.transform_to_forward(offset_from.transform)
             right = lgsvl.utils.transform_to_right(offset_from.transform)
@@ -159,7 +162,7 @@ class Simulation(object):
         info(f"Setup EGO vehicle: {ego['variant']}", also_console=self.console)
         info(f"Setup EGO Starting Point: {ego['transform']}", also_console=self.console)
         self.egoState = lgsvl.AgentState()
-        self.state_point_handler(self.egoState, ego['transform'], self.egoState)
+        self.state_point_handler(self.egoState, ego['transform'], self.egoState, True)
         self.ego_model = self.env.str("LGSVL__VEHICLE_0", ego['sensorsConfigurationId'])
         self.ego = self.sim.add_agent(self.ego_model, lgsvl.AgentType.EGO, self.egoState)
         self.ego.connect_bridge(self.apollo_host, self.apollo_port)
