@@ -1,0 +1,147 @@
+{
+    "version": "0.01",
+    "testcase": {
+        "name": "Right Turn",
+        "id": "AV-1.01"
+    },
+    "vseMetadata": {
+        "cameraSettings": {
+            "position": {
+                "x": -74.5729293823242,
+                "y": 60,
+                "z": -57.5616722106934
+            },
+            "rotation": {
+                "x": 90,
+                "y": 230.40007019043,
+                "z": 0
+            }
+        }
+    },
+    "map": {
+        "id": "5d272540-f689-4355-83c7-03bf11b6865f",
+        "name": "SanFrancisco",
+        "parameterType": "map"
+    },
+    "agents": [
+        {
+            "id": "3f4211dc-e5d7-42dc-94c5-c4832b1331bb",
+            "uid": "0463e464-73d4-4f59-9a6d-2ea0e2d36276",
+            "variant": "Lincoln2017MKZ_LGSVL",
+            "modules": ["Localization","Transform","Routing","Prediction","Planning","Control"],
+            "type": 1,
+            "parameterType": "vehicle",
+            "transform": {
+                "position": {
+                    "x":-189.83805847168,
+                    "y":10.2076635360718,
+                    "z":507.875854492188
+                },
+                "rotation": {
+                    "x":-4.44081206296687E-06,
+                    "y":359.909271240234,
+                    "z":3.97569339823689E-16
+                }
+            },
+            "sensorsConfigurationId": "09510748-1f41-484e-9495-7d17129a62e3",
+            "destinationPoint": {
+                "position": {
+                    "x":-110.707008361816,
+                    "y":10.2076635360718,
+                    "z":556.779846191406
+                },
+                "rotation": {
+                    "x":3.50118972341021E-15,
+                    "y":91.3937377929688,
+                    "z":-2.8784963236779E-13
+                }
+            }
+        },
+        {
+            "uid": "46e4ded2-0ebd-4646-a2c5-2b82bd084924",
+            "variant": "BoxTruck",
+            "type": 2,
+            "parameterType": "",
+            "transform": {
+                "position": {
+                    "x":-197.826690673828,
+                    "y":10.2076644897461,
+                    "z":595.357543945313
+                },
+                "rotation": {
+                    "x":3.81084123546316E-06,
+                    "y":180.000122070313,
+                    "z":0
+                }
+            },
+            "behaviour": {
+                "name": "NPCWaypointBehaviour",
+                "parameters": {
+                    "isLaneChange": false,
+                    "maxSpeed": 0
+                }
+            },
+            "color": {
+                "r":0.943396210670471,
+                "g":0.943396210670471,
+                "b":0.943396210670471
+            },
+            "waypoints": [
+                {
+                   "ordinalNumber":0,
+                   "position":{
+                      "x":-197.76432800293,
+                      "y":10.2076635360718,
+                      "z":425.153717041016
+                   },
+                   "angle":{
+                      "x":3.81084123546316E-06,
+                      "y":180.000122070313,
+                      "z":0
+                   },
+                   "waitTime":0,
+                   "speed":6,
+                   "trigger":{
+                      "effectors":[
+                         
+                      ]
+                   }
+                }
+             ]
+        },
+        {
+            "uid": "b5826d2b-3a32-4ed3-a609-68f5c9567565",
+            "variant": "Hatchback",
+            "type": 2,
+            "parameterType": "",
+            "transform": {
+                "position": {
+                    "x":-193.786315917969,
+                    "y":10.2076635360718,
+                    "z":509.739959716797
+                },
+                "rotation": {
+                    "x":0,
+                    "y":0.0615139789879322,
+                    "z":0
+                }
+            },
+            "behaviour": {
+                "name": "NPCWaypointBehaviour",
+                "parameters": {
+                    "isLaneChange": false,
+                    "maxSpeed": 0
+                }
+            },
+            "color": {
+                "r":0.00240299617871642,
+                "g":0.18620178103447,
+                "b":0.50943398475647
+            },
+            "waypoints": []
+        }
+    ],
+    "controllables": [],
+    "time": 12,
+    "weather": {"rain":0.0, "fog":0, "wetness":0, "cloudiness":0, "damage":0}
+}

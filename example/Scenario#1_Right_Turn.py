@@ -35,7 +35,7 @@ else:
 egoState = lgsvl.AgentState()
 # Spawn point found in Unity Editor
 egoState.transform = sim.map_point_on_lane(lgsvl.Vector(-189.83805847168, 10.2076635360718, 507.875854492188))
-ego = sim.add_agent(os.environ.get("LGSVL__VEHICLE_0", "09510748-1f41-484e-9495-7d17129a62e3"), lgsvl.AgentType.EGO, egoState)
+ego = sim.add_agent(os.environ.get("LGSVL__VEHICLE_0", lgsvl.wise.DefaultAssets.ego_lincoln2017mkz_apollo5_full_analysis), lgsvl.AgentType.EGO, egoState)
 ego.connect_bridge(BRIDGE_HOST, BRIDGE_PORT)
 
 right = lgsvl.utils.transform_to_right(egoState.transform) # Unit vector in the right direction of the EGO
