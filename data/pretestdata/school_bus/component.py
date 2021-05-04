@@ -1,3 +1,6 @@
+# This is a test data file for school bus test cases.
+# Data prepared using svl simulator visual editor feature.
+
 testcasename = "Encounter school bus i_schoolbus_status on i_schoolbus_direction at c_time in c_weather day"
 
 testcaseid = "AV-4."
