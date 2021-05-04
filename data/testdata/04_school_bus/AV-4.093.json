@@ -1,0 +1,67 @@
+{
+    "version": "0.01",
+    "testcase": {
+        "name": "Encounter school bus Stop on Backward lane at 5:00PM in Rainning day",
+        "id": "AV-4.93"
+    },
+    "vseMetadata": {
+        "cameraSettings": {
+            "position": {
+                "x": 6.2187967300415,
+                "y": 100.09001159668,
+                "z": -7.28806209564209
+            },
+            "rotation": {
+                "x": 90,
+                "y": 89.9999694824219,
+                "z": 0
+            }
+        }
+    },
+    "map": {
+        "id": "54d489b5-5682-49aa-80b3-0530bcf4ed10",
+        "name": "Straight2LaneOpposingPedestrianCrosswalk",
+        "parameterType": "map"
+    },
+    "agents": [
+        {
+            "id": "73805704-1e46-4eb6-b5f9-ec2244d5951e",
+            "uid": "4a998b0d-15ff-4559-8f7b-1ef34104f963",
+            "variant": "Lincoln2017MKZ_LGSVL",
+            "type": 1,
+            "parameterType": "vehicle",
+            "modules": ["Localization","Transform","Routing","Prediction","Planning","Control"],
+            "transform": {
+                "spawns": 0,
+                "forward": 10
+            },
+            "sensorsConfigurationId": "2e9095fa-c9b9-4f3f-8d7d-65fa2bb03921",
+            "destinationPoint": {
+                "forward": 100
+            }
+        },
+        {
+            "uid": "ec9faacc-386a-41b4-ad4d-82534f101a83",
+            "variant": "SchoolBus",
+            "type": 2,
+            "parameterType": "",
+            "transform": {"forward": 100, "right": -4, "opposite": true},
+            "behaviour": {
+                "name": "NPCWaypointBehaviour",
+                "parameters": {
+                    "isLaneChange": false,
+                    "maxSpeed": 0
+                }
+            },
+            "color": {
+                "r": 1,
+                "g": 0.846774280071259,
+                "b": 0
+            },
+            "waypoints": [{"ordinalNumber": 0, "forward": 40, "waitTime": 5, "speed": 8.9399995803833, "trigger": {"effectors": []}}, {"ordinalNumber": 1, "forward": 30, "waitTime": 0, "speed": 8.9399995803833, "trigger": {"effectors": []}}]
+        }
+    ],
+    "controllables": [],
+    "time": 17,
+    "weather": {"rain": 0.8, "fog": 0, "wetness": 0, "cloudiness": 0, "damage": 0}
+}

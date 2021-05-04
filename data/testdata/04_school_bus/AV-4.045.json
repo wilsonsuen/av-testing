@@ -1,8 +1,8 @@
 {
     "version": "0.01",
     "testcase": {
-        "name": "Test encounter school bus Moving on Backward lane",
-        "id": "AV-4.12"
+        "name": "Encounter school bus Moving on Backward lane at 8:00AM in Cloudy day",
+        "id": "AV-4.45"
     },
     "vseMetadata": {
         "cameraSettings": {
@@ -45,11 +45,7 @@
             "variant": "SchoolBus",
             "type": 2,
             "parameterType": "",
-            "transform": {
-                "forward": 100,
-                "right": -4,
-                "opposite": true
-            },
+            "transform": {"forward": 100, "right": -4, "opposite": true},
             "behaviour": {
                 "name": "NPCWaypointBehaviour",
                 "parameters": {
@@ -62,29 +58,10 @@
                 "g": 0.846774280071259,
                 "b": 0
             },
-            "waypoints": [
-                {
-                    "ordinalNumber": 0,
-                    "forward": 40,
-                    "waitTime": 0,
-                    "speed": 8.9399995803833,
-                    "trigger": {
-                        "effectors": []
-                    }
-                },
-                {
-                    "ordinalNumber": 1,
-                    "forward": 30,
-                    "waitTime": 0,
-                    "speed": 8.9399995803833,
-                    "trigger": {
-                        "effectors": []
-                    }
-                }
-            ]
+            "waypoints": [{"ordinalNumber": 0, "forward": 40, "waitTime": 0, "speed": 8.9399995803833, "trigger": {"effectors": []}}, {"ordinalNumber": 1, "forward": 30, "waitTime": 0, "speed": 8.9399995803833, "trigger": {"effectors": []}}]
         }
     ],
     "controllables": [],
-    "time": 19,
-    "weather": {"rain":0.8, "fog":0, "wetness":0, "cloudiness":0, "damage":0}
+    "time": 8,
+    "weather": {"rain": 0.0, "fog": 0, "wetness": 0, "cloudiness": 0.8, "damage": 0}
 }

@@ -224,8 +224,6 @@ class Simulation(object):
                     self.npcs[-1].follow(waypoints, loop=False)
             self.npcs[-1].on_collision(on_collision)
 
-
-
     @keyword
     def start_simulation(self):
         # while True:
