@@ -2,7 +2,8 @@
     "version": "0.01",
     "testcase": {
         "name": "Encounter school bus Stop on Forward lane at 7:00PM in Rainning day",
-        "id": "AV-4.114"
+        "id": "AV-4.114",
+        "reportpath": "results/04_school_bus/AV-4.114"
     },
     "vseMetadata": {
         "cameraSettings": {
@@ -63,5 +64,6 @@
     ],
     "controllables": [],
     "time": 19,
-    "weather": {"rain": 0.8, "fog": 0, "wetness": 0, "cloudiness": 0, "damage": 0}
+    "weather": {"rain": 0.8, "fog": 0, "wetness": 0, "cloudiness": 0, "damage": 0},
+    "simulation_time": 10
 }

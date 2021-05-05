@@ -5,6 +5,8 @@ testcasename = "Encounter school bus i_schoolbus_status on i_schoolbus_direction
 
 testcaseid = "AV-4."
 
+testreportpath = "results/04_school_bus"
+
 components = {
     "c_weather": {
         "Sunny": {"rain": 0.0, "fog": 0, "wetness": 0, "cloudiness": 0, "damage": 0},
@@ -84,7 +86,8 @@ jsontemplate = """{
     "version": "0.01",
     "testcase": {
         "name": "testcasename",
-        "id": "testcaseid"
+        "id": "testcaseid",
+        "reportpath": "testreportpath"
     },
     "vseMetadata": {
         "cameraSettings": {

@@ -2,7 +2,8 @@
     "version": "0.01",
     "testcase": {
         "name": "Encounter school bus Loading on Backward lane at 5:00PM in Rainning day",
-        "id": "AV-4.13"
+        "id": "AV-4.013",
+        "reportpath": "results/04_school_bus/AV-4.013"
     },
     "vseMetadata": {
         "cameraSettings": {
@@ -63,5 +64,6 @@
     ],
     "controllables": [],
     "time": 17,
-    "weather": {"rain": 0.8, "fog": 0, "wetness": 0, "cloudiness": 0, "damage": 0}
+    "weather": {"rain": 0.8, "fog": 0, "wetness": 0, "cloudiness": 0, "damage": 0},
+    "simulation_time": 10
 }

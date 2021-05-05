@@ -28,7 +28,8 @@ def test_case_generation(pretestdatapath, outputpath):
             else:
                 tempjson = tempjson.replace(f'"{header}"', json.dumps(tempvar))
         tempjson = tempjson.replace("testcasename", curr_testcasename)
-        tempjson = tempjson.replace("testcaseid", testcaseid + str(idx))
+        tempjson = tempjson.replace("testcaseid", testcaseid + str(idx).zfill(3))
+        tempjson = tempjson.replace("testreportpath", testreportpath + "/" + testcaseid + str(idx).zfill(3))
         with open(outputpath + testcaseid + str(idx).zfill(3) + ".json", 'w') as f:
             f.write(tempjson)
 
