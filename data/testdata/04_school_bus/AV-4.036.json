@@ -3,7 +3,9 @@
     "testcase": {
         "name": "Encounter school bus Loading on Forward lane at 12:00PM in Sunny day",
         "id": "AV-4.036",
-        "reportpath": "results/04_school_bus/AV-4.036"
+        "reportpath": "results/04_school_bus/AV-4.036",
+        "context": {"c_time": "12:00PM", "c_weather": "Sunny"},
+        "input": {"i_schoolbus_direction": "Forward lane", "i_schoolbus_status": "Loading"}
     },
     "vseMetadata": {
         "cameraSettings": {

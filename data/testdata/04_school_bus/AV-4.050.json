@@ -3,7 +3,9 @@
     "testcase": {
         "name": "Encounter school bus Moving on Backward lane at 8:00AM in Foggy day",
         "id": "AV-4.050",
-        "reportpath": "results/04_school_bus/AV-4.050"
+        "reportpath": "results/04_school_bus/AV-4.050",
+        "context": {"c_time": "8:00AM", "c_weather": "Foggy"},
+        "input": {"i_schoolbus_direction": "Backward lane", "i_schoolbus_status": "Moving"}
     },
     "vseMetadata": {
         "cameraSettings": {

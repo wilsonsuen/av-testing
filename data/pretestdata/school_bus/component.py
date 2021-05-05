@@ -87,7 +87,9 @@ jsontemplate = """{
     "testcase": {
         "name": "testcasename",
         "id": "testcaseid",
-        "reportpath": "testreportpath"
+        "reportpath": "testreportpath",
+        "context": "contextinfo",
+        "input": "inputinfo"
     },
     "vseMetadata": {
         "cameraSettings": {

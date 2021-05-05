@@ -27,6 +27,15 @@ def test_case_generation(pretestdatapath, outputpath):
                     tempjson = tempjson.replace(f'"{k}"', json.dumps(v))
             else:
                 tempjson = tempjson.replace(f'"{header}"', json.dumps(tempvar))
+        temp_c = dict()
+        temp_i = dict()
+        for k, v in testcase.items():
+            if k.startswith('c_'):
+                temp_c[k] = v
+            if k.startswith('i_'):
+                temp_i[k] = v
+        tempjson = tempjson.replace('"contextinfo"', json.dumps(temp_c))
+        tempjson = tempjson.replace('"inputinfo"', json.dumps(temp_i))
         tempjson = tempjson.replace("testcasename", curr_testcasename)
         tempjson = tempjson.replace("testcaseid", testcaseid + str(idx).zfill(3))
         tempjson = tempjson.replace("testreportpath", testreportpath + "/" + testcaseid + str(idx).zfill(3))
