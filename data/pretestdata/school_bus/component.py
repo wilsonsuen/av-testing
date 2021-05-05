@@ -145,5 +145,6 @@ jsontemplate = """{
     ],
     "controllables": [],
     "time": "c_time",
-    "weather": "c_weather"
+    "weather": "c_weather",
+    "simulation_time": 10
 }"""

@@ -23,5 +23,7 @@ if __name__ == "__main__":
         school_bus_test.body.create_keyword('Start Simulation')
         school_bus_test.teardown.config(name='Close Simulation')
 
-    main_suite.run(output='output.xml')
-    rebot('output.xml')
+    main_suite.run(output='results/04_school_bus/output.xml')
+    rebot('results/04_school_bus/output.xml',
+          log="results/04_school_bus/log.html",
+          report="results/04_school_bus/report.html")

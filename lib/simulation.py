@@ -31,7 +31,6 @@ class Simulation(object):
         self.npcs = list()
         self.peds = list()
         self.console = True
-        # self.sim = lgsvl.Simulator(self.simulator_host, self.simulator_port)
 
     @keyword
     def set_simulator_and_map(self, map_name):
@@ -192,6 +191,7 @@ class Simulation(object):
             npcState = lgsvl.AgentState()
             self.state_point_handler(npcState, npc['transform'], self.egoState)
             self.npcs.append(self.sim.add_agent(npc['variant'], lgsvl.AgentType.NPC, npcState))
+            self.npcs_state.append(list())
             waypoints = list()
             for waypoint in npc['waypoints']:
                 tempState = lgsvl.AgentState()
@@ -210,7 +210,8 @@ class Simulation(object):
             info(f"Setup NPC: {ped['variant']}", also_console=self.console)
             pedState = lgsvl.AgentState()
             self.state_point_handler(pedState, ped['transform'], self.egoState)
-            self.npcs.append(self.sim.add_agent(ped['variant'], lgsvl.AgentType.NPC, pedState))
+            self.peds.append(self.sim.add_agent(ped['variant'], lgsvl.AgentType.PEDESTRIAN, pedState))
+            self.peds_state.append(list())
             waypoints = list()
             for waypoint in npc['waypoints']:
                 tempState = lgsvl.AgentState()
@@ -221,13 +222,17 @@ class Simulation(object):
                     angle = lgsvl.Vector(0, 0, 0)
                 waypoints.append(lgsvl.DriveWaypoint(tempState.position, waypoint['speed'], angle, idle=waypoint['waitTime']))
                 if waypoints:
-                    self.npcs[-1].follow(waypoints, loop=False)
-            self.npcs[-1].on_collision(on_collision)
+                    self.peds[-1].follow(waypoints, loop=False)
+            self.peds[-1].on_collision(on_collision)
+
+        self.simulation_time = testdata['simulation_time']
 
     @keyword
     def start_simulation(self):
-        # while True:
-        self.sim.run(10)
+        t0 = time.time()
+        while True:
+            self.sim.run(0.5)
+
 
     @keyword
     def close_simulation(self):
@@ -235,6 +240,9 @@ class Simulation(object):
 
     @keyword("EGO Car driving at ${speed} and School Bus ${status} on ${lane}")
     def school_bus_case(self, speed, status, lane):
+        """
+        For robot example only, final product see testcases/school_bus.py
+        """
         console(f'Testing - EGO Car driving at {speed} and School Bus {status} on {lane}')
         npc = [{
             'npc': 'SchoolBus',
