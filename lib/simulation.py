@@ -160,7 +160,7 @@ class Simulation(object):
                 tempState = lgsvl.AgentState()
                 self.state_point_handler(tempState, waypoint, npcState)
                 if 'angle' in waypoint:
-                    angle = lgsvl.Vector(waypoint['angle'])
+                    angle = lgsvl.Vector(*waypoint['angle'].values())
                 else:
                     angle = npcState.transform.rotation
                 waypoints.append(lgsvl.DriveWaypoint(tempState.position, waypoint['speed'], angle, idle=waypoint['waitTime']))
@@ -209,25 +209,60 @@ class Simulation(object):
                 break
 
     @keyword
-    def Log_Simulation_Data(self):
-        def plot_data(points):
+    def log_simulation_data(self):
+        def plot_point_data(points):
             return list(zip(*[[point.position.x, point.position.z] for point in points]))
         info(f"Generate position graph", also_console=self.console)
         plt.clf()
-        plt.title(self.testcasename)
+        plt.title("Position Mapping")
         plt.xlabel('X axis')
         plt.ylabel('Y axis')
         plt.plot(self.ego_state[0].position.x, self.ego_state[0].position.z, 'rP', markersize=6)
-        plt.plot(*plot_data(self.ego_state), 'ro', label='EGO', markersize=2)
+        plt.plot(*plot_point_data(self.ego_state), 'ro', label='EGO', markersize=2)
         for npc_state in self.npcs_state:
             plt.plot(npc_state[0].position.x, npc_state[0].position.z, 'bP', markersize=6)
-            plt.plot(*plot_data(npc_state), 'bo', label='NPC', markersize=2)
+            plt.plot(*plot_point_data(npc_state), 'bo', label='NPC', markersize=2)
         for ped_state in self.peds_state:
             plt.plot(ped_state[0].position.x, ped_state[0].position.z, 'gP', markersize=6)
-            plt.plot(*plot_data(ped_state), 'go', label='Pedestrain', markersize=2)
+            plt.plot(*plot_point_data(ped_state), 'go', label='Pedestrain', markersize=2)
         plt.legend()
         plt.savefig(self.testreport_path + "/scenario_state.png")
         info(f"<img src=./{self.testcaseid}/scenario_state.png>", html=True)
+        
+        info(f"Generate EGO Speed graph", also_console=self.console)
+        plt.clf()
+        plt.title("EGO Speed Chart")
+        plt.xlabel('Time (0.5s)')
+        plt.ylabel('Speed (m/s)')
+        egospeeds = [ego.speed for ego in self.ego_state]
+        timeaxis = [i * 0.5 for i in range(1, len(self.ego_state) + 1)]
+        plt.plot(timeaxis, egospeeds, 'bo', label='EGO', markersize=2)
+        plt.legend()
+        plt.savefig(self.testreport_path + "/ego_speed.png")
+        info(f"<img src=./{self.testcaseid}/ego_speed.png>", html=True)
+
+        info(f"Generate EGO to NPCs Distance graph", also_console=self.console)
+        plt.clf()
+        plt.title("EGO to NPCs Distance Chart")
+        plt.xlabel('Time (0.5s)')
+        plt.ylabel('Distance (meter)')
+        timeaxis = [i * 0.5 for i in range(1, len(self.ego_state) + 1)]
+        for npc_num, npc_state in enumerate(self.npcs_state, 1):
+            distance_list = list()
+            for idx, npc in enumerate(npc_state):
+                distance_list.append(separation(self.ego_state[idx].position,
+                                                npc.position))
+            plt.plot(timeaxis, distance_list, 'bo', label=f'NPC{npc_num} to EGO', markersize=2)
+        for ped_num, ped_state in enumerate(self.peds_state, 1):
+            distance_list = list()
+            for idx, ped in enumerate(ped_state):
+                distance_list.append(separation(self.ego_state[idx].position,
+                                                ped.position))
+            plt.plot(timeaxis, distance_list, 'go', label=f'Pedestrian{ped_num} to EGO', markersize=2)
+        plt.legend()
+        plt.savefig(self.testreport_path + "/npc_to_ego.png")
+        info(f"<img src=./{self.testcaseid}/npc_to_ego.png>", html=True)
+    
         info(f"Saving Simulation Data", also_console=self.console)
         with open(self.testreport_path + "/agent.log", "w") as f:
             f.write("=====EGO Car State=====\n")
@@ -240,13 +275,18 @@ class Simulation(object):
                 f.write(str(ped_state) + "\n")
 
     @keyword
-    def Validate_Result(self):
+    def validate_result(self):
         if "Loading" in self.testcasename and "Backward lane" in self.testcasename:
             raise TestException("EGO did not stop when school bus loading.")
 
     @keyword
     def close_simulation(self):
         self.sim.close()
+
+    @keyword
+    def test_case_teardown(self):
+        BuiltIn().run_keyword("Log Simulation Data")
+        BuiltIn().run_keyword("Close Simulation")
 
     @keyword("EGO Car driving at ${speed} and School Bus ${status} on ${lane}")
     def school_bus_case(self, speed, status, lane):

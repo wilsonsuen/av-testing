@@ -20,8 +20,7 @@ if __name__ == "__main__":
         school_bus_test = main_suite.tests.create(testdata['testcase']['name'])
         school_bus_test.setup.config(name='Setup Scenario', args=[testcase_path])
         school_bus_test.body.create_keyword('Start Simulation')
-        school_bus_test.body.create_keyword('Log Simulation Data')
-        school_bus_test.teardown.config(name='Close Simulation')
+        school_bus_test.teardown.config(name='Test Case Teardown')
 
     main_suite.run(output='results/02_stop_sign/output.xml')
     rebot('results/02_stop_sign/output.xml',
