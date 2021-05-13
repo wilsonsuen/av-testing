@@ -1,0 +1,170 @@
+{
+    "version": "0.01",
+    "testcase": {
+        "name": "Ego Exit Parking Lot",
+        "id": "AV-3.001",
+        "reportpath": "results/03_parking/AV-3.001"
+    },
+    "vseMetadata": {
+        "cameraSettings": {
+            "position": {
+                "x": -74.5729293823242,
+                "y": 60,
+                "z": -57.5616722106934
+            },
+            "rotation": {
+                "x": 90,
+                "y": 230.40007019043,
+                "z": 0
+            }
+        }
+    },
+    "map": {
+        "id": "2aae5d39-a11c-4516-87c4-cdc9ca784551",
+        "name": "AutonomouStuff",
+        "parameterType": "map"
+    },
+    "agents": [
+        {
+            "id": "3f4211dc-e5d7-42dc-94c5-c4832b1331bb",
+            "uid": "0463e464-73d4-4f59-9a6d-2ea0e2d36276",
+            "variant": "Lincoln2017MKZ_LGSVL",
+            "modules": ["Localization","Transform","Routing","Prediction","Planning","Control"],
+            "type": 1,
+            "parameterType": "vehicle",
+            "transform": {
+                "position": {
+                    "x": 40.5634231567383,
+                    "y": -2.50977087020874,
+                    "z": -66.7819671630859
+                },
+                "rotation": {
+                    "x": 0.591625452041626,
+                    "y": 176.358734130859,
+                    "z": 1.66761549014183E-09
+                }
+            },
+            "sensorsConfigurationId": "09510748-1f41-484e-9495-7d17129a62e3",
+            "destinationPoint": {
+                "position": {
+                    "x": -1.87711715698242,
+                    "y": -2.83383727073669,
+                    "z": -106.872482299805
+                },
+                "rotation": {
+                    "x": 3.18007326126099,
+                    "y": 179.749588012695,
+                    "z": -5.29838644069969E-07
+                }
+            }
+        },
+        {
+            "uid": "484ca5f3-39f9-47c8-a442-804959e6aed6",
+            "variant": "Jeep",
+            "type": 2,
+            "parameterType": "",
+            "transform": {
+                "position": {
+                    "x": 5.89918518066406,
+                    "y": -2.9221408367157,
+                    "z": -112.112930297852
+                },
+                "rotation": {
+                    "x": 359.092681884766,
+                    "y": 320.543518066406,
+                    "z": 0
+                }
+            },
+            "behaviour": {
+                "name": "NPCWaypointBehaviour",
+                "parameters": {
+                    "isLaneChange": false,
+                    "maxSpeed": 0
+                }
+            },
+            "color": {
+                "r": 1,
+                "g": 0.442666590213776,
+                "b": 0.251999914646149
+            },
+            "waypoints": [
+                {
+                    "ordinalNumber": 0,
+                    "position": {
+                        "x": 0.383377075195313,
+                        "y": -2.86623859405518,
+                        "z": -102.718910217285
+                    },
+                    "angle": {
+                        "x": 359.516052246094,
+                        "y": 347.360076904297,
+                        "z": 6.6703442769267E-09
+                    },
+                    "waitTime": 0,
+                    "speed": 6,
+                    "trigger": {
+                        "effectors": []
+                    }
+                },
+                {
+                    "ordinalNumber": 1,
+                    "position": {
+                        "x": -1.84525108337402,
+                        "y": -2.7802140712738,
+                        "z": -92.781120300293
+                    },
+                    "angle": {
+                        "x": 0.134375885128975,
+                        "y": 76.0216293334961,
+                        "z": 0
+                    },
+                    "waitTime": 0,
+                    "speed": 6,
+                    "trigger": {
+                        "effectors": []
+                    }
+                },
+                {
+                    "ordinalNumber": 2,
+                    "position": {
+                        "x": 24.6181907653809,
+                        "y": -2.84417295455933,
+                        "z": -86.1936569213867
+                    },
+                    "angle": {
+                        "x": 359.57373046875,
+                        "y": 62.0760536193848,
+                        "z": 2.66811639448861E-08
+                    },
+                    "waitTime": 0,
+                    "speed": 6,
+                    "trigger": {
+                        "effectors": []
+                    }
+                },
+                {
+                    "ordinalNumber": 3,
+                    "position": {
+                        "x": 36.5132598876953,
+                        "y": -2.74401617050171,
+                        "z": -79.8891754150391
+                    },
+                    "angle": {
+                        "x": 359.57373046875,
+                        "y": 62.0760536193848,
+                        "z": 2.66811639448861E-08
+                    },
+                    "waitTime": 0,
+                    "speed": 6,
+                    "trigger": {
+                        "effectors": []
+                    }
+                }
+            ]
+        }
+    ],
+    "controllables": [],
+    "time": 8,
+    "weather": {"rain":0.0, "fog":0, "wetness":0, "cloudiness":0, "damage":0},
+    "simulation_time": 15
+}

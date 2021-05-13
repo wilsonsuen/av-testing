@@ -16,7 +16,7 @@ from data.asset.svlasset import SVLAsset
 
 class Simulation(object):
     """
-    Simulation class that help initialize lgsvl simulator and dreamview 
+    Simulation class that help initialize lgsvl simulator and dreamview
     """
     ROBOT_LIBRARY_SCOPE = 'TEST'
 
@@ -187,12 +187,15 @@ class Simulation(object):
                 if waypoints:
                     self.peds[-1].follow(waypoints, loop=False)
             self.peds[-1].on_collision(on_collision)
+        # Need to add controllables
 
 
     @keyword
     def start_simulation(self):
         """
         Run simulation, only collect data in this state.
+        current data collected: EGO, NPC, Pedestrian state
+        other collectable data: controllables, EGO sensors
         """
         t0 = time.time()
         while True:
@@ -210,6 +213,15 @@ class Simulation(object):
 
     @keyword
     def log_simulation_data(self):
+        """
+        Logging function after simulation is finished, all data can be used for validation and analysis.
+        1. Graphing examples using matplotlib
+        1.1. Position Graph - 2d representation of all objects position in the simulation
+        1.2. Ego Speed over time
+        1.3. Object distance between ego over time
+        2. Logging example using file RW
+        2.1. Log all objects position, speed, direction every 0.5 seconds
+        """
         def plot_point_data(points):
             return list(zip(*[[point.position.x, point.position.z] for point in points]))
         info(f"Generate position graph", also_console=self.console)
@@ -276,15 +288,30 @@ class Simulation(object):
 
     @keyword
     def validate_result(self):
-        if "Loading" in self.testcasename and "Backward lane" in self.testcasename:
-            raise TestException("EGO did not stop when school bus loading.")
+        """
+        Collision is handled in during simulation
+        Some ideas of validations...
+        1. output tree provides expected output condition (ex. ego should be stopped at end of simulation,
+                                                               ego and npc should be n meters away,
+                                                               etc.)
+        2. Standard check in some areas (ex. ego max speed should be < road speed limit,
+                                             standard safety driving distance,
+                                             etc.)
+        """
+        pass
 
     @keyword
     def close_simulation(self):
+        """
+        Just clear simulator instance
+        """
         self.sim.close()
 
     @keyword
     def test_case_teardown(self):
+        """
+        Teardown wrapper for logging, and close simulation
+        """
         BuiltIn().run_keyword("Log Simulation Data")
         BuiltIn().run_keyword("Close Simulation")
 

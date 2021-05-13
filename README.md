@@ -1,4 +1,5 @@
 # av-testing
+This is class project for SJSU 2021 Spring.  
 
 ## Testing Configuration
 ### Scenario Setting
@@ -32,7 +33,7 @@
 3. etc.  
 
 
-### Automation Flow
+## Automation Flow
 Required chrome extension: [link](https://chrome.google.com/webstore/detail/github-%2B-mermaid/goiiopgdnkogdbjmncgedmgpoajilohe/related?hl=en)
 ```mermaid
 graph TD
@@ -47,3 +48,86 @@ G[Scenario End] --> H
 G --> B
 H[Log result]
 ```
+
+## File Structure
+```
+├── data
+│   ├── asset                       # Wrapper class for svl simulator models
+│   ├── pretestdata                 # school bug example of data for test case generation
+│   └── testdata                    # generated test case data for automation
+├── example                         # Some example code or test script
+├── lib
+│   ├── simulation.py               # Core for simulation code, integrated Python API and Dreamview API
+│   └── utils.py                    # Helper functions for vector calculation
+├── requirements.txt                # Python modules list
+├── results                         # Test results
+│   ├── 02_stop_sign
+│   ├── 03_parking
+│   └── 04_school_bus
+├── testcases                       # Test case script example
+│   ├── parking.py
+│   ├── right_turn.py
+│   ├── school_bus.py
+│   └── stop_sign.py
+└── tool # useful tools
+    ├── location.py                 # get location vector of EGO car, replaced by Visual Editor
+    └── test_case_generator.py      # test case generateion script
+```
+
+
+## Environment Setup
+
+### Requirement
+#### Hardware
+Nvidia 1080 or better  
+2 Systems: Windows(Simulator) + Ubuntu 20(Apollo)  
+1 System: Ubuntu(Simulator + Apollo)
+#### Software
+- [Python](https://www.python.org/) - Should have Python3.x in ubuntu by default
+- [SVL simulator](https://www.svlsimulator.com/) - Unity Based simulator
+- [ApolloAuto](https://github.com/ApolloAuto/apollo) - AD stack for self driving car
+- [SVL simulator Python API](https://www.svlsimulator.com/docs/python-api/python-api/) - SVL simulator Python API, support simulator and dreamview
+- [Robot Framework](https://robotframework.org/) - Framework for test suite development
+- [matplotlib](https://matplotlib.org/) - Data visualization library for Python
+
+### Installation
+1. Download from: https://www.svlsimulator.com/
+2. Install Apollo following: https://www.svlsimulator.com/docs/system-under-test/apollo-master-instructions/
+3. Install PythonAPI following: https://www.svlsimulator.com/docs/python-api/python-api/
+4. Install required libraries: `pip3 install -r requirements.txt`
+
+### Test case generation
+This step highly depends on AI Testing Tool, required modeling tree to be built in specific syntax.  
+Context must named with prefix 'c_'  
+Input must named with prefix 'i_'  
+The generator will parse exported csv file from AI Testing Tool. Then subtitue string into user defined template(component.py).  
+
+For template, we can get a base template by creating the simulation setting with Visual Editor provided by SVL simulator. 
+Then add following data into the json file.
+```
+{
+    "testcase": { # test case information
+        "name": "testcasename",
+        "id": "testcaseid",
+        "reportpath": "testreportpath",
+        "context": "contextinfo",
+        "input": "inputinfo"
+    },
+    "agents": [ # EGO car modules
+        {
+            "modules": ["Localization","Transform","Routing","Prediction","Planning","Control"],
+        }
+    ],
+    "time": "c_time", # time setting
+    "weather": "c_weather", # Weather setting
+    "simulation_time": 10  # Simulation stop after 
+}
+```
+
+Syntax: `Syntax: python3 test_case_generator.py <test data path> <output path>`  
+Sample:  `python3 tool/test_case_generator.py data/pretestdata/school_bus data/testdata/04_school_bus/`
+
+### Execute Test Case
+
+Predefined test case script
+`python3 testcases/school_bus.py`

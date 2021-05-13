@@ -25,6 +25,3 @@ def separation(V1, V2):
     ydiff = V1.y - V2.y
     zdiff = V1.z - V2.z
     return math.sqrt(xdiff * xdiff + ydiff * ydiff + zdiff * zdiff)
-
-def vector_to_2d(position):
-    return position.x / position.z, position.y / position.z
