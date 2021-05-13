@@ -1,5 +1,5 @@
 # av-testing
-This is class project for SJSU 2021 Spring.  
+This is class project for SJSU 2021 Spring CMPE 187/287.  
 
 ## Testing Configuration
 ### Scenario Setting
