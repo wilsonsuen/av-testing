@@ -20,7 +20,7 @@ class Simulation(object):
     """
     ROBOT_LIBRARY_SCOPE = 'TEST'
 
-    def __init__(self, simulator_host='127.0.0.1', simulator_port=8181, apollo_host='127.0.0.1',
+    def __init__(self, report_base_path="", simulator_host='127.0.0.1', simulator_port=8181, apollo_host='127.0.0.1',
                  apollo_port=9090):
         self.env = Env()
         self.simulator_host = self.env.str("LGSVL__SIMULATOR_HOST", simulator_host)
@@ -34,6 +34,7 @@ class Simulation(object):
         self.peds = list()
         self.peds_state = list()
         self.console = True
+        self.report_base_path = report_base_path
 
     @keyword
     def set_simulator_and_map(self, map_name):
@@ -78,7 +79,7 @@ class Simulation(object):
             obj.transform.rotation = lgsvl.Vector(obj.transform.rotation.x, obj.transform.rotation.y-180, obj.transform.rotation.z)
 
     @keyword('Setup Scenario')
-    def setup_map_env(self, path): # could be more like trafficlight
+    def setup_map_env(self, path, report_sufix=""): # could be more like trafficlight
         """ This function set up map enviroment initial stage, user can define:
         all configuration should be defined in a json file. Format follows output
         of visual editor.
@@ -89,11 +90,18 @@ class Simulation(object):
         # Setup Simulator and Map
         self.testcasename = testdata['testcase']['name']
         self.testcaseid = testdata['testcase']['id']
-        self.testreport_path = testdata['testcase']['reportpath']
+        if report_sufix:
+            self.testlog_fullpath = os.path.join(self.report_base_path, f"{self.testcaseid}_{report_sufix}")
+            self.testlog_relpath = f"./{self.testcaseid}_{report_sufix}"
+        else:
+            self.testlog_fullpath = os.path.join(self.report_base_path, self.testcaseid)
+            self.testlog_relpath = f"./{self.testcaseid}"
         self.simulation_time = testdata['simulation_time']
+        self.expected_output = testdata['output']
         try: 
-            os.mkdir(self.testreport_path)
+            os.mkdir(self.testlog_fullpath)
         except OSError as error: 
+            console("oh no")
             pass 
         
 
@@ -109,6 +117,7 @@ class Simulation(object):
         ego = dict()
         npcs = list()
         peds = list()
+        lights = list()
 
         for agent in testdata['agents']:
             if agent['type'] == 1:
@@ -163,7 +172,13 @@ class Simulation(object):
                     angle = lgsvl.Vector(*waypoint['angle'].values())
                 else:
                     angle = npcState.transform.rotation
-                waypoints.append(lgsvl.DriveWaypoint(tempState.position, waypoint['speed'], angle, idle=waypoint['waitTime']))
+                if "trigger_distance" in waypoint:
+                    trigger_distance = waypoint['trigger_distance']
+                else:
+                    trigger_distance = 0
+                waypoints.append(lgsvl.DriveWaypoint(tempState.position, waypoint['speed'],
+                                                     angle, idle=waypoint['waitTime'],
+                                                     trigger_distance=trigger_distance))
                 if waypoints:
                     self.npcs[-1].follow(waypoints, loop=False)
             self.npcs[-1].on_collision(on_collision)
@@ -183,11 +198,20 @@ class Simulation(object):
                     angle = lgsvl.Vector(waypoint['angle'])
                 else:
                     angle = lgsvl.Vector(0, 0, 0)
-                waypoints.append(lgsvl.WalkWaypoint(tempState.position, waypoint['waitTime'], speed=waypoint['speed']))
+                if "trigger_distance" in waypoint:
+                    trigger_distance = waypoint['trigger_distance']
+                else:
+                    trigger_distance = 0
+                waypoints.append(lgsvl.WalkWaypoint(tempState.position, waypoint['waitTime'],
+                                                    speed=waypoint['speed'], trigger_distance=trigger_distance))
                 if waypoints:
                     self.peds[-1].follow(waypoints, loop=False)
             self.peds[-1].on_collision(on_collision)
         # Need to add controllables
+        info(f"Setup Traffic Light", also_console=self.console)
+        for traffic_light in testdata["controllables"]:
+            signal = self.sim.get_controllable(lgsvl.Vector(*traffic_light["position"].values()), "signal")
+            signal.control(f'trigger=50;{traffic_light["policy"][0]["value"]}')
 
 
     @keyword
@@ -238,8 +262,8 @@ class Simulation(object):
             plt.plot(ped_state[0].position.x, ped_state[0].position.z, 'gP', markersize=6)
             plt.plot(*plot_point_data(ped_state), 'go', label='Pedestrain', markersize=2)
         plt.legend()
-        plt.savefig(self.testreport_path + "/scenario_state.png")
-        info(f"<img src=./{self.testcaseid}/scenario_state.png>", html=True)
+        plt.savefig(os.path.join(self.testlog_fullpath, "scenario_state.png"))
+        info(f"<img src={self.testlog_relpath}/scenario_state.png>", html=True)
         
         info(f"Generate EGO Speed graph", also_console=self.console)
         plt.clf()
@@ -250,8 +274,8 @@ class Simulation(object):
         timeaxis = [i * 0.5 for i in range(1, len(self.ego_state) + 1)]
         plt.plot(timeaxis, egospeeds, 'bo', label='EGO', markersize=2)
         plt.legend()
-        plt.savefig(self.testreport_path + "/ego_speed.png")
-        info(f"<img src=./{self.testcaseid}/ego_speed.png>", html=True)
+        plt.savefig(os.path.join(self.testlog_fullpath, "ego_speed.png"))
+        info(f"<img src={self.testlog_relpath}/ego_speed.png>", html=True)
 
         info(f"Generate EGO to NPCs Distance graph", also_console=self.console)
         plt.clf()
@@ -272,11 +296,11 @@ class Simulation(object):
                                                 ped.position))
             plt.plot(timeaxis, distance_list, 'go', label=f'Pedestrian{ped_num} to EGO', markersize=2)
         plt.legend()
-        plt.savefig(self.testreport_path + "/npc_to_ego.png")
-        info(f"<img src=./{self.testcaseid}/npc_to_ego.png>", html=True)
+        plt.savefig(os.path.join(self.testlog_fullpath, "npc_to_ego.png"))
+        info(f"<img src={self.testlog_relpath}/npc_to_ego.png>", html=True)
     
         info(f"Saving Simulation Data", also_console=self.console)
-        with open(self.testreport_path + "/agent.log", "w") as f:
+        with open(os.path.join(self.testlog_fullpath, "agent.log"), "w") as f:
             f.write("=====EGO Car State=====\n")
             f.write(str(self.ego_state) + "\n")
             for idx, npc_state in enumerate(self.npcs_state):
@@ -298,7 +322,21 @@ class Simulation(object):
                                              standard safety driving distance,
                                              etc.)
         """
-        pass
+        if "ego_status" in self.expected_output.keys():
+            # Check ego speed in last state
+            if self.expected_output["ego_status"] == "Stop":
+                if self.ego_state[-1].speed > mph_to_mps(1):
+                    BuiltIn().set_tags('FinalStatus')
+                    raise TestException("EGO Car should be stopped but was still in motion.")
+            else:
+                if self.ego_state[-1].speed < mph_to_mps(1):
+                    BuiltIn().set_tags('FinalStatus')
+                    raise TestException("EGO Car should be moving but was stopped.")
+        if "at_destination" in self.expected_output.keys():
+            if self.expected_output["at_destination"]:
+                if separation(self.ego_state[-1].position, self.destination) > 5:
+                    BuiltIn().set_tags('Miss-Destination')
+                    raise TestException("EGO Car could not make it to destination point in time.")
 
     @keyword
     def close_simulation(self):
@@ -314,24 +352,5 @@ class Simulation(object):
         """
         BuiltIn().run_keyword("Log Simulation Data")
         BuiltIn().run_keyword("Close Simulation")
-
-    @keyword("EGO Car driving at ${speed} and School Bus ${status} on ${lane}")
-    def school_bus_case(self, speed, status, lane):
-        """
-        For robot example only, final product see testcases/school_bus.py
-        """
-        console(f'Testing - EGO Car driving at {speed} and School Bus {status} on {lane}')
-        npc = [{
-            'npc': 'SchoolBus',
-            'Starting Point': SCHOOL_BUS_DATA[lane]['Starting Point'],
-            'waypoints': SCHOOL_BUS_DATA[lane]['waypoints'] if status.lower() == 'moving' else\
-                         SCHOOL_BUS_DATA[lane]['waypoints'][:1]
-        }]
-        self.setup_map_env("Straight2LaneOpposingPedestrianCrosswalk",
-                           EGO_DATA,
-                           npcs=npc)
-        self.start_simulation()
-        self.sim.close()
-
 
 simulation = Simulation

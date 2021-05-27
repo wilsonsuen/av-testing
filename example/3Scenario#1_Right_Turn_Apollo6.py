@@ -35,11 +35,18 @@ else:
 egoState = lgsvl.AgentState()
 # Spawn point found in Unity Editor
 egoState.transform = sim.map_point_on_lane(lgsvl.Vector(-189.83805847168, 10.2076635360718, 507.875854492188))
-ego = sim.add_agent(os.environ.get("LGSVL__VEHICLE_0", "09510748-1f41-484e-9495-7d17129a62e3"), lgsvl.AgentType.EGO, egoState)
+ego = sim.add_agent(os.environ.get("LGSVL__VEHICLE_0", "2e9095fa-c9b9-4f3f-8d7d-65fa2bb03921"), lgsvl.AgentType.EGO, egoState)
 ego.connect_bridge(BRIDGE_HOST, BRIDGE_PORT)
 
 right = lgsvl.utils.transform_to_right(egoState.transform) # Unit vector in the right direction of the EGO
 forward = lgsvl.utils.transform_to_forward(egoState.transform) # Unit vector in the forward direction of the EGO
+
+dv = lgsvl.dreamview.Connection(sim, ego, "127.0.0.1")
+dv.set_hd_map(env.str("LGSVL__AUTOPILOT_HD_MAP", "San Francisco"))
+dv.set_vehicle(env.str("LGSVL__AUTOPILOT_0_VEHICLE_CONFIG", "Lincoln2017MKZ_LGSVL"))
+modules = ["Localization","Transform","Routing","Prediction","Planning","Control"]
+dv.setup_apollo("-110.707008361816", "556.779846191406", modules)
+
 
 # spawn Hatchback
 npcState = lgsvl.AgentState()

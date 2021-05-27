@@ -14,7 +14,7 @@ if __name__ == "__main__":
     testcase_paths = glob.glob('data/testdata/04_school_bus/*.json')
     testcase_paths.sort()
 
-    for testcase_path in testcase_paths:
+    for testcase_path in testcase_paths[110:113]:
         with open(testcase_path) as f:
             testdata = json.load(f)
         tags = list(testdata['testcase']['context'].values()) +\

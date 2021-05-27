@@ -6,6 +6,7 @@
 """
 
 import math
+from robot.libraries.BuiltIn import BuiltIn
 
 class TestException(Exception):
     pass
@@ -17,7 +18,7 @@ def mps_to_mph(mps):
     return float("{:.2f}".format(mps * 2.237))
 
 def on_collision(agent1, agent2, contact):
-    print(agent1.transform.position)
+    BuiltIn().set_tags('Collision')
     raise TestException("Ego collided with {}".format(agent2))
 
 def separation(V1, V2):
