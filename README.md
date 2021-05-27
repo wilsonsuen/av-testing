@@ -60,6 +60,7 @@ H[Log result]
 │   ├── simulation.py               # Core for simulation code, integrated Python API and Dreamview API
 │   └── utils.py                    # Helper functions for vector calculation
 ├── requirements.txt                # Python modules list
+├── automation.py                   # CLI for test data generator, automation runner, and stress test runner
 ├── results                         # Test results
 │   ├── 02_stop_sign
 │   ├── 03_parking
@@ -131,3 +132,35 @@ Sample:  `python3 tool/test_case_generator.py data/pretestdata/school_bus data/t
 
 Predefined test case script
 `python3 testcases/school_bus.py`
+
+Run with automation.py
+```
+usage: AV-Testing Automation [-h] [--testcasegen] [--pretestdata PRETESTDATA]
+                             [--testcasedata TESTCASEDATA] [--automation]
+                             [--reportpath REPORTPATH] [--stress STRESS] [-d]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --testcasegen         Test Case Generator
+  --pretestdata PRETESTDATA
+                        Pretest data path
+  --testcasedata TESTCASEDATA
+                        Test Case file output path
+  --automation          Run Automation
+  --reportpath REPORTPATH
+                        Test Case file output path
+  --stress STRESS       Stress test cycle number
+  -d, --debug           Debug mode
+```
+#### Test case generation
+This will use predefined configuration under 04_school_bus to generate test data in simple_run directory.  
+`python3 automation.py --testcasegen --testcasedata ./data/testdata/simple_run/ --pretestdata ./data/pretestdata/04_school_bus/`
+
+#### Automation Test sample
+This will run all detected scenarios within the given directory and store reports into result2.  
+`python3 automation.py --automation --testcasedata ./data/testdata/simple_run/ --reportpath ./result2`
+
+#### Stress Test sample
+This will run test scenario AV-3.001 5 tims and store report into result3.  
+`python3 automation.py --stress 5 --testcasedata ./data/testdata/simple_run/03_parking_lot/AV-3.001.json --reportpath ./result3`
+
